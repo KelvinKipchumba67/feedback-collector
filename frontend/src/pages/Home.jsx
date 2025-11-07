@@ -7,7 +7,7 @@ const Home = () => {
 
   // Fetch existing feedback
   useEffect(() => {
-    fetch("https://feedback-collector-brv4.onrender.com")
+    fetch("https://feedback-collector-brv4.onrender.com/api/feedback")
       .then((res) => res.json())
       .then((data) => setFeedback(data))
       .catch(console.error);
@@ -15,7 +15,7 @@ const Home = () => {
 
   // Handle new feedback submission
   const handleSubmit = async (newFeedback) => {
-    const res = await fetch("https://feedback-collector-brv4.onrender.com", {
+    const res = await fetch("https://feedback-collector-brv4.onrender.com/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newFeedback),
@@ -26,12 +26,12 @@ const Home = () => {
   };
 
   const handleDelete = async (id) => {
-    await fetch(`https://feedback-collector-brv4.onrender.com/${id}`, { method: "DELETE" });
+    await fetch(`https://feedback-collector-brv4.onrender.com/api/feedback/${id}`, { method: "DELETE" });
     setFeedback(feedback.filter((f) => f._id !== id));
   };
 
   const handleResolve = async (id) => {
-    const res = await fetch(`https://feedback-collector-brv4.onrender.com/${id}/resolve`, { method: "PUT" });
+    const res = await fetch(`https://feedback-collector-brv4.onrender.com/api/feedback/${id}/resolve`, { method: "PUT" });
     const updated = await res.json();
     setFeedback(feedback.map((f) => (f._id === id ? updated : f)));
   };
