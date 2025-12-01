@@ -1,0 +1,38 @@
+name: CI - Lint and Test
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Run jobs for both frontend and backend
+        working-directory: ["frontend", "backend"]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: ./${{ matrix.working-directory }}/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: ./${{ matrix.working-directory }}
+        run: npm ci # 'ci' is faster and safer for workflows than 'install'
+
+      - name: Run Linter
+        working-directory: ./${{ matrix.working-directory }}
+        run: npm run lint
+
+      - name: Run Tests
+        working-directory: ./${{ matrix.working-directory }}
+        run: npm test
